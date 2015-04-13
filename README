@@ -1,3 +1,9 @@
+Handshake port of suds 0.3.9 that backports from sudo-jurko version .5 a python2.7 fix related to unicode encoding. 
+
+See below:
+
+https://bitbucket.org/jurko/suds/commits/9da81de891958292850a242781b30a3493f617e1/raw/
+
 OVERVIEW
 
 The "Suds" web services client is a lightweight soap-based client for python

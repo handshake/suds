@@ -27,7 +27,7 @@ import sys
 #
 
 __version__ = '0.3.9'
-__build__="GA R659-20100219"
+__build__="HS python2.7"
 
 #
 # Exceptions
