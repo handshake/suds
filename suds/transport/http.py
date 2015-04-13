@@ -55,7 +55,7 @@ class HttpTransport(Transport):
         
     def open(self, request):
         try:
-            url = request.url
+            url = self.__get_request_url(request)
             log.debug('opening (%s)', url)
             u2request = u2.Request(url)
             self.proxy = self.options.proxy
@@ -65,7 +65,7 @@ class HttpTransport(Transport):
 
     def send(self, request):
         result = None
-        url = request.url
+        url = self.__get_request_url(request)
         msg = request.message
         headers = request.headers
         try:
@@ -159,6 +159,30 @@ class HttpTransport(Transport):
         cp.update(p)
         return clone
 
+    @staticmethod
+    def __get_request_url(request):
+        """
+        Returns the given request's URL, properly encoded for use with urllib.
+
+        Python 2.7 httplib implementation expects the URL passed to it to not
+        be a unicode string. If it is, then passing it to the underlying
+        httplib Request object will cause that object to forcefully convert all
+        of its data to unicode, assuming that data contains ASCII data only and
+        raising a UnicodeDecodeError exception if it does not (caused by simple
+        unicode + string concatenation).
+
+        Additional notes:
+          * URLs in general may contain ASCII characters only.
+          * Python 2.4 httplib implementation does not really care about this
+            as it does not use the internal optimization present in the Python
+            2.7 implementation causing all the requested data to be converted
+            to unicode.
+          * Python 3.x httplib.client module implementation converts the URL
+            passed to it to a bytes object internally, using an explicitly
+            specified ASCII encoding.
+
+        """
+        return request.url.encode('ascii')
 
 class HttpAuthenticated(HttpTransport):
     """
